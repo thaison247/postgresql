@@ -69,3 +69,19 @@ FROM
     sales
 GROUP BY
     CUBE(brand, segment);
+
+
+-- SỬ DỤNG ROOLUP: TÌM SỐ LẦN MƯỢN ĐĨA DVD THEO TỪNG NGÀY, TỪNG THÁNG, VÀ TỪNG NĂM (SAMPLE DATABASE: DVDRENTAL)
+SELECT
+    EXTRACT (YEAR FROM rental_date) y,
+    EXTRACT (MONTH FROM rental_date) M,
+    EXTRACT (DAY FROM rental_date) d,
+    COUNT(rental_id) AS number_of_rental
+FROM 
+    rental
+GROUP BY
+    ROLLUP(
+        EXTRACT (YEAR FROM rental_date),
+        EXTRACT (MONTH FROM rental_date),
+        EXTRACT (DAY FROM rental_date)
+    );
