@@ -33,6 +33,63 @@ SELECT
             ELSE 0
         END
     ) AS premium
+FROM film
 
-FROM 
-    film
+
+SELECT
+	SUM(
+		CASE rating
+		WHEN 'NC-17' THEN 1
+		ELSE 0
+		END
+	) "NC-17",
+	
+	SUM(
+		CASE rating
+		WHEN 'G' THEN 1
+		ELSE 0
+		END
+	) G,
+	
+	SUM(
+		CASE rating
+		WHEN 'PG' THEN 1
+		ELSE 0
+		END
+	) PG,
+	
+	SUM(
+		CASE rating
+		WHEN 'PG-13' THEN 1
+		ELSE 0
+		END
+	) "PG-13"
+	
+FROM film
+
+
+--COALESCE và NULLIF
+--tạo bảng
+CREATE TEMP TABLE posts (
+  id serial primary key,
+	title VARCHAR (255) NOT NULL,
+	excerpt VARCHAR (150),
+	body TEXT,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMP
+);
+
+INSERT INTO posts (title, excerpt, body)
+VALUES
+      ('test post 1','test post excerpt 1','test post body 1'),
+      ('test post 2','','test post body 2'),
+      ('test post 3', null ,'test post body 3');
+	  
+SELECT * FROM posts
+
+-- Dùng COALESCE và NULLIF để set giá trị mặc định của excerpt, nếu null hoặc rỗng thì lấy 40 kí tự đầu của phần body
+SELECT 
+	posts.id,
+	title,
+	COALESCE(NULLIF(excerpt, ''), LEFT(body, 40)) excerpt -- nếu excerpt = '' -> tham số đầu tiên của COALESCE = null -> Lấy 40 kí tự đầu trường 'body'
+FROM posts
